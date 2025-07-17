@@ -43,7 +43,7 @@ function App() {
 				</div>
 				<div style={{backgroundColor: "#F0F4F8"}} className='text-black w-5/6 p-5'>
 					<Routes>
-						<Route path='/' element={<Bike />} />
+						<Route path='/bike' element={<Bike />} />
 					</Routes>
 				</div>
 			</div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const SideNav = () => {
 
-	const category = ['bike','Dog', 'Parents']
+	const category = ['bike','Dog']
   return (
 	<div style={{backgroundColor : "#F4F6F8"}} className='text-black text-center p-5 h-[100vh] sticky'>
 		<div className=''>
