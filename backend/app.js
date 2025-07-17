@@ -5,7 +5,7 @@ import Bike from "./Routes/Bike.js";
 const app = express();
 app.use(express.json())
 app.use(cors());
-Bike();
+app.use("/bike", Bike);
 
 app.use(cors({
   origin: 'http://localhost:5173',
