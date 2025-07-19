@@ -2,34 +2,21 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from './components/Navbar.jsx';
 import SideNav from './components/SideNav.jsx';
 import Bike from "./components/Bike.jsx";
-import { auth, googleProvider } from "../firebase.js"
-import { signInWithPopup } from 'firebase/auth';
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Login from "./components/Login.jsx";
 
 function App() {
-	const [ user, setUser ] = useState(),
-	  handleSign = () => {
-		signInWithPopup(auth,googleProvider).then((data) => {
-			setUser(data.user)
-			localStorage.setItem("email", data.user.email)
-			localStorage.setItem("name", data.user.displayName)
-		})
-	}	
-
-
+	const [ user, setUser ] = useState();
+	
 	if (!user) {
 		return (
-			<div style={{backgroundColor: "#F0F4F8"}} className='w-full h-screen text-black flex flex-col items-center justify-center'>
-				<div className="text-center">
-					<h1 className="text-4xl font-bold mb-8">Welcome to LifePluse</h1>
-					<button 
-						onClick={handleSign}
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-					>
-						Sign in with Google
-					</button>
-				</div>
-			</div>
+			<Router>
+				<Routes>
+					<Route path="/" element={<Login user={user} setUser={setUser}/>}  />
+				</Routes>
+			</Router>
+
 		);
 	}
 
