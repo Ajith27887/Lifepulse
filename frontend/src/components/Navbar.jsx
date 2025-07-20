@@ -10,8 +10,9 @@ const handleSignOut = () => {
     const auth = getAuth();
     signOut(auth).then(() => {
         props.setUser(null);
-		localStorage.removeItem("email")
-        navigate("/");
+		localStorage.removeItem("email");
+		localStorage.removeItem("name");
+        navigate("/login");
     }).catch((error) => {
         alert(error);
     });
@@ -30,7 +31,7 @@ const handleSignOut = () => {
 				}
 			</div>
 			<div>
-				<button className="bg-red-600 gap-5" onClick={handleSignOut}>LogOut</button>
+				<button className="bg-red-600 gap-5" onClick={handleSignOut}>SignOut</button>
 			</div>
 		</div>
 	)

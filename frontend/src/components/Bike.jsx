@@ -15,19 +15,14 @@ const BikeOilMonitor = () => {
       ...prev,
       [index]: data,
     }));
-	console.log(startDates,title,"startDate");
-
   };
 
   useEffect(() => {
     const fetchBikeReminders = async () => {
+		console.log("clicked");
+		
       try {
-        const res = await fetch("http://localhost:8000/bike", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const res = await fetch("http://localhost:8080/bike");
         const json = await res.json();
         setReminders(json);
         const initialDates = {};
@@ -35,6 +30,8 @@ const BikeOilMonitor = () => {
           initialDates[i] = null;
         });
         setStartDates(initialDates);
+		console.log(json,"json");
+		
 		
       } catch (err) {
         console.error("❌ Error fetching bike data:", err);
@@ -44,6 +41,8 @@ const BikeOilMonitor = () => {
     fetchBikeReminders();
   }, []);
 
+  console.log(reminders,"reminders");
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {reminders &&

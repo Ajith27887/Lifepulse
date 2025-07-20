@@ -1,20 +1,37 @@
 
 import React from 'react'
 import { googleProvider, auth } from "../../firebase.js" 
-import { signInWithPopup } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { useCallback } from 'react';
+import { useEffect } from 'react';
+import { getAuth } from 'firebase/auth';
 
 const Login = (props) => {
-	const setUser = props.setUser,
+	const {setUser} = props,
 		navigate = useNavigate(),
-	handleSign = () => {
-		signInWithPopup(auth,googleProvider).then((data) => {
-			setUser(data.user)
-			localStorage.setItem("email", data.user.email)
-			localStorage.setItem("name", data.user.displayName)
-			navigate("/bike")
-		})
-	}	
+		auth = getAuth(),
+	handleSign = useCallback(() => {
+		signInWithPopup(auth, googleProvider).catch((error) => {
+			console.error("Google Sign-In Error:", error);
+		});
+	}, [auth]);
+
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
+			if (user) {
+				setUser(user);
+				localStorage.setItem("email", user.email);
+				localStorage.setItem("name", user.displayName);
+				navigate('/');
+			} else {
+				setUser(null);
+			}
+		});
+
+		return () => unsubscribe();
+	}, [auth, navigate, setUser]);
+
   return (
 		<div style={{backgroundColor: "#F0F4F8"}} className='w-full h-screen text-black flex flex-col items-center justify-center'>
 			<div className="text-center">
