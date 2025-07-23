@@ -16,8 +16,8 @@ app.use(cors({
   
 }));
 
-connectdb(); //Connecting MongoDB
-
 app.use("/bike", Bike); //Route
 
-app.listen(process.env.PORT, () => console.log(`Server started at PORT ${process.env.PORT}`));
+connectdb().then(() => {
+	app.listen(process.env.PORT, () => console.log(`Server started at PORT ${process.env.PORT}`));
+})
