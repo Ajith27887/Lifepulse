@@ -13,9 +13,7 @@ router.post("/",async (req, res) => {
 		const { startDate, expireMonth } = req.body;
 
 		const Day = new Date(startDate).getDate();
-		console.log(Day , "day");
 		
-
 		const newengine = new Engine({
 			startDate : new Date(startDate),
 			expireMonth : expireMonth,
@@ -23,12 +21,8 @@ router.post("/",async (req, res) => {
 		
 		console.log("New Engine Object:", newengine);
 		await newengine.save();
-		console.log("Engine data saved successfully.");
-
 		res.status(201).json(newengine);
-
 	}catch (err){
-		console.error("Error saving engine data:", err);
 		res.status(500).json({ error: "Failed to save engine data" });
 	}
 

@@ -2,34 +2,38 @@ import { useEffect, useState } from 'react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import postdata from "../components/lib.js"
 
 const BikeOilMonitor = () => {
-  const [startDate, setStartDate] = useState(null);
-  const [expireMonth, setExpireMonth] = useState('');
+  const [startDate, setStartDate] = useState(null),
+   [expireMonth, setExpireMonth] = useState(''),
+   [alert, setAlert] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!startDate || !expireMonth) {
-      alert('Please fill in all fields.');
+      setAlert('Please fill in all fields.');
       return;
     }
 
+	setAlert('')
+
     try {
-      const response = await fetch("http://localhost:8080/bike", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+
+	const value =	{
           startDate: startDate.toISOString(),
           expireMonth: Number(expireMonth),
-        }),
-      });
+    }
+
+	const response = await postdata("bike",value)	
 
       const data = await response.json();
 
+	  console.log(data,"response");
+	  
+
       if (response.ok) {
+		setAlert("✅ Data Saved")
         setStartDate(null);
         setExpireMonth('');
       } else {
@@ -83,13 +87,14 @@ const BikeOilMonitor = () => {
             placeholder='Expire Month (e.g., 3)'
             value={expireMonth}
             onChange={(e) => setExpireMonth(e.target.value)}
-            className='p-3 w-full border-2 bg-gray-800 border-white rounded text-white'
+            className='p-3 w-full mt-5 border-2 bg-gray-800 border-white rounded text-white'
             step={1}
           />
         </div>
         <button type='submit' className='p-3 w-full mt-5 bg-red-500 text-white text-center rounded hover:bg-red-600 transition-colors'>
           Submit
         </button>
+		<p className='mt-5'>{alert}</p>
       </form>
     </div>
   );
