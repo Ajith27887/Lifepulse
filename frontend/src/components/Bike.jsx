@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import postdata from "../components/lib.js"
+import usePostdata from "../components/lib.js"
 
 const BikeOilMonitor = () => {
   const [startDate, setStartDate] = useState(null),
@@ -25,7 +25,7 @@ const BikeOilMonitor = () => {
           expireMonth: Number(expireMonth),
     }
 
-	const response = await postdata("bike",value)	
+	const response = await usePostdata("bike",value)	
 
       const data = await response.json();
 

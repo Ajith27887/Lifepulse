@@ -1,4 +1,4 @@
-export default async function postdata (api,data) {
+export default async function usePostdata (api,data) {
       const response = await fetch(`http://localhost:8080/${api}`, {
         method: 'POST',
         headers: {
