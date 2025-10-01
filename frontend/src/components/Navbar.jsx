@@ -1,5 +1,8 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import  { auth } from "../../firebase.js"
+import { onAuthStateChanged } from 'firebase/auth';
+import { useState } from 'react';
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -13,6 +16,26 @@ function classNames(...classes) {
 }
 
 export default function Example() {
+
+	const [ userName, setUserName ] = useState(""),
+		[userEmail, setUserEmail] = useState("");
+
+	onAuthStateChanged(auth, (user) => {
+	  if (user) {
+	    // User is signed in, get their display name
+	    const name = user.displayName;
+	    const email = user.email;
+		setUserName(name);
+		setUserEmail(email);
+	    
+	    console.log(`Signed in as: ${name || 'No display name'} (${email})`);
+	    
+	  } else {
+	    // User is signed out
+	    console.log("No user is currently signed in.");
+	  }
+	});
+
   return (
     <Disclosure
       as="nav"
@@ -64,6 +87,8 @@ export default function Example() {
               <span className="sr-only">View notifications</span>
               <BellIcon aria-hidden="true" className="size-6" />
             </button>
+
+			<p>{userName}</p>
 
             {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">

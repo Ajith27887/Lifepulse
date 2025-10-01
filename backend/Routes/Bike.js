@@ -4,7 +4,7 @@ import Engine from "../models/engineSchema.js"
 
 
 router.get("/", (req, res) => {
-	res.json(["Engine Oil"])
+	res.json({Name  : "Engine Oil"})
 });
 
 router.post("/",async (req, res) => {
