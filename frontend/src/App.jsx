@@ -5,6 +5,7 @@ import Bike from "./components/Bike.jsx";
 import { useState } from "react";
 import Login from "./components/Login.jsx";
 import Home from "./components/Home.jsx";
+import "./App.scss"
 
 function App() {
 	const [ user, setUser ] = useState(null);
@@ -18,10 +19,10 @@ function App() {
 						<>
 							<Navbar user={user} setUser={setUser} />
 							<div className="flex">
-								<div className="w-1/6">
+								<div className="side-container">
 									<SideNav />
 								</div>
-								<div style={{backgroundColor: "#F0F4F8"}} className='text-black w-5/6 p-5'>
+								<div style={{backgroundColor: "#1E293B"}} className='Dashboard-container text-black p-5'>
 									<Routes>
 										<Route path='/' element={<Home />} />
 										<Route path='/bike' element={<Bike />} />

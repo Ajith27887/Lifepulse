@@ -1,6 +1,18 @@
 @import './index.css';
 @import "tailwindcss";
 
+/* Black
+background: #121212; */
+
+/* Blue
+background: #1E293B; */
+
+/* Green */
+/* background: #00FFAB; */
+
+/* Purple */
+/* background: #6D28D9; */
+
 
 @keyframes logo-spin {
   from {
@@ -23,4 +35,18 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.side-container{
+	width: 5%;
+}
+.Dashboard-container{
+	width: 95%;
+}
+.side-container:hover{
+	width: 20%;
+	transition: ease-in 0.5s;
+	.Dashboard-container{
+		width: 80%;
+	}
 }

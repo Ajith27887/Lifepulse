@@ -1,0 +1,32 @@
+.SideNav {
+	background: #1E293B;
+	color: white;
+	border-right: 1px solid #00FFAB;
+	padding: 10px;
+
+	button{
+		background: #121212;
+		color: #00FFAB;
+		font-weight: bolder;
+		text-align: center;
+		padding: 20px;
+		border-radius: 10px;
+		width: 70%;
+		margin-top: 10px;
+	}
+
+	.open{
+		display: flex;
+		justify-content: flex-end;
+		svg{
+			font-size: 30px;
+		}
+	}
+}
+
+
+
+
+
+
+

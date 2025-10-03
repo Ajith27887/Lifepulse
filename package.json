@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "react-datepicker": "^8.4.0"
+    "react-datepicker": "^8.4.0",
+    "sass": "^1.93.2"
   }
 }

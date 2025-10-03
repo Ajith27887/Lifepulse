@@ -12,40 +12,40 @@ const BikeOilMonitor = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!startDate || !expireMonth) {
-      setAlert('Please fill in all fields.');
-      return;
+		setAlert('❌ Please fill in all fields.');
+		const timer = setTimeout(() => {
+			setAlert('')
+		}, 5000); 
+    	return () => clearTimeout(timer)
     }
-
-	setAlert('')
-
     try {
 
-	const value =	{
-          startDate: startDate.toISOString(),
-          expireMonth: Number(expireMonth),
-    }
+		const value =	{
+		      startDate: startDate.toISOString(),
+		      expireMonth: Number(expireMonth),
+		}
 
-	const response = await usePostdata("bike",value)	
+		const response = await usePostdata("bike",value)	
 
-      const data = await response.json();
+		  const data = await response.json();
 
-	  console.log(data,"response");
-	  
+		  console.log(data,"response");
+		  
 
-      if (response.ok) {
-		setAlert("✅ Data Saved")
-        setStartDate(null);
-        setExpireMonth('');
-      } else {
-        console.error("Error from server:", data);
-      }
-    } catch (error) {
-      console.error("❌ Error Sending bike data to API:", error);
-    }
+		  if (response.ok) {
+			setAlert("✅ Data Saved")
+		    setStartDate(null);
+		    setExpireMonth('');
+		  } else {
+		    console.error("Error from server:", data);
+		  }
+		} catch (error) {
+		  console.error("❌ Error Sending bike data to API:", error);
+		}
   };
 
   return (
-    <div className="bg-gray-800 shadow-xl text-white p-4 rounded max-w-md mx-auto">
+    <div style={{backgroundColor : "#121212"}} className="shadow-xl text-white p-4 rounded max-w-md mt-6">
       <h3 className="font-bold text-center text-xl mb-4">Engine Oil Monitor</h3>
       <form onSubmit={handleSubmit}>
         <div className='pt-7 space-y-5'>
