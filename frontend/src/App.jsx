@@ -6,35 +6,44 @@ import { useState } from "react";
 import Login from "./components/Login.jsx";
 import Home from "./components/Home.jsx";
 import "./App.scss"
+import SideMenuProvider from "./components/Context/SideMenuContext.jsx";
+import { SideMenuContext } from "./components/Context/SideMenuContext.jsx";
+
 
 function App() {
 	const [ user, setUser ] = useState(null);
-
  	return (
 		<Router>
-			<Routes>
-				<Route path="/login" element={<Login user={user} setUser={setUser}/>} />
-				<Route path="/*" element={
-					user ? (
-						<>
-							<Navbar user={user} setUser={setUser} />
-							<div className="flex">
-								<div className="side-container">
-									<SideNav />
+			<SideMenuProvider>
+				<Routes>
+					<Route path="/login" element={<Login user={user} setUser={setUser}/>} />
+					<Route path="/*" element={
+						user ? (
+							<>
+								<Navbar user={user} setUser={setUser} />
+								<div className="flex">
+									<SideMenuContext.Consumer>
+										{({ isOpen }) => (
+                                            <div className={`side-container ${isOpen ? "open" : "closed"}`}>
+                                                <SideNav />
+                                            </div>
+                                        )}
+									</SideMenuContext.Consumer>
+							
+									<div style={{backgroundColor: "#1E293B"}} className={`Dashboard-container  text-black p-5`}>
+										<Routes>
+											<Route path='/' element={<Home />} />
+											<Route path='/bike' element={<Bike />} />
+										</Routes>
+									</div>
 								</div>
-								<div style={{backgroundColor: "#1E293B"}} className='Dashboard-container text-black p-5'>
-									<Routes>
-										<Route path='/' element={<Home />} />
-										<Route path='/bike' element={<Bike />} />
-									</Routes>
-								</div>
-							</div>
-						</>
-					) : (
-						<Login user={user} setUser={setUser}/>
-					)
-				} />
-			</Routes>
+							</>
+						) : (
+							<Login user={user} setUser={setUser}/>
+						)
+					} />
+				</Routes>
+			</SideMenuProvider>
 		</Router>
 	);
 }

@@ -37,16 +37,16 @@ background: #1E293B; */
   color: #888;
 }
 
-.side-container{
-	width: 5%;
-}
 .Dashboard-container{
-	width: 95%;
+	width: 96%;
 }
-.side-container:hover{
-	width: 20%;
-	transition: ease-in 0.5s;
-	.Dashboard-container{
-		width: 80%;
+.side-container{
+	&.closed{
+		width: 4%;
+		transition: ease-in 0.5s;
+	}
+	&.open{
+		transition: ease-in 0.5s;
+		width: 10%;
 	}
 }

@@ -1,12 +1,12 @@
 import React from 'react';
-import BikeOilMonitor from './Bike';
+import Bike from './Bike';
 import "../components/Home.scss"
 
 const Home = () => {
   return (
 	<div className='Dashboard'>
-	  <h1>Widgets</h1>
-	  <BikeOilMonitor/>
+	  <h1 className='text-white'>Bike</h1>
+	  <Bike/>
 	</div>
   )
 }
