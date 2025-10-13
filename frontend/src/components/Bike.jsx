@@ -1,114 +1,64 @@
 import { useState } from 'react';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import usePostdata from "../components/lib.js"
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
+
 import "../components/Bike.scss"
 
 const Bike = () => {
-  const [startDate, setStartDate] = useState(null),
-   [expireMonth, setExpireMonth] = useState(''),
+  const [startDue, setStartDue] = useState(false),
    [alert, setAlert] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!startDate || !expireMonth) {
-		setAlert('❌ Please fill in all fields.');
-		const timer = setTimeout(() => {
-			setAlert('')
-		}, 5000); 
-    	return () => clearTimeout(timer)
-    }
+    e.preventDefault();	
     try {
+		const expireMOnth = 3;
 
-		const value =	{
-		      startDate: startDate.toISOString(),
-		      expireMonth: Number(expireMonth),
+		const DueDate = new Date();
+		DueDate.setMonth(DueDate.getMonth() + expireMOnth)
+
+		const DateObj = {
+			Data : DueDate
 		}
 
-		const response = await usePostdata("bike",value)	
+		const response = await usePostdata("bike", DateObj)	
 
-		  const data = await response.json();
+		const data = await response.json();
 
 		  console.log(data,"response");
 		  
 
-		  if (response.ok) {
+		if (response.ok) {
 			setAlert("✅ Data Saved")
-		    setStartDate(null);
-		    setExpireMonth('');
-		  } else {
-		    console.error("Error from server:", data);
-		  }
-		} catch (error) {
-		  console.error("❌ Error Sending bike data to API:", error);
+			setStartDue(true);
+		} else {
+			console.error("Error from server:", data);
 		}
+	} catch (error) {
+	  console.error("❌ Error Sending bike data to API:", error);
+	}
   };
 
   return (
-	<div className='grid md:grid-cols-2 lg:grid-cols-5 gap-7 mt-5' >
-		<div className='card AddCard flex justify-center items-center rounded-lg'>
-			<ControlPointIcon className='text-lg'/>
-		</div>
-
-		<div className='card AddCard flex justify-center items-center rounded-lg'>
-			<ControlPointIcon className='text-lg'/>
-		</div>
-		<div className='card AddCard flex justify-center items-center rounded-lg'>
-			<ControlPointIcon className='text-lg'/>
-		</div>
-		<div  className="card">
-	      <h3 className="font-bold text-center text-xl mb-4">Engine Oil Monitor</h3>
-	      <form onSubmit={handleSubmit}>
-	        <div className='pt-7 space-y-5'>
-	          <LocalizationProvider dateAdapter={AdapterDayjs}>
-	            <DatePicker
-	              label="Service Date"
-	              value={startDate}
-	              onChange={(newValue) => setStartDate(newValue)}
-	              slotProps={{
-	                textField: {
-	                  sx: {
-	                    width: "100%",
-	                    backgroundColor: 'white',
-	                    borderRadius: 1,
-	                    '& .MuiOutlinedInput-root': {
-	                      '& fieldset': {
-	                        borderColor: 'white',
-	                      },
-	                      '&:hover fieldset': {
-	                        borderColor: 'white',
-	                      },
-	                      '&.Mui-focused fieldset': {
-	                        borderColor: 'white',
-	                      },
-	                    },
-	                    '& .MuiInputBase-input': {
-	                      color: 'black',
-	                    },
-	                    '& .MuiSvgIcon-root': {
-	                      color: 'black',
-	                    },
-	                  },
-	                },
-	              }}
-	            />
-	          </LocalizationProvider>
-	          <input
-	            type='number'
-	            placeholder='Expire Month (e.g., 3)'
-	            value={expireMonth}
-	            onChange={(e) => setExpireMonth(e.target.value)}
-	            className='p-3 w-full mt-5 border-2 bg-gray-800 border-white rounded text-white'
-	            step={1}
-	          />
+	<div className='grid md:grid-cols-2 xl:grid-cols-5 gap-7 mt-5' >
+		<div  className="card AddCard">
+			<div className='grid grid-cols-2 justify-center'>
+				<TwoWheelerIcon style={{ fontSize : "100px" }}/>
+				<div>
+	    		  	<h3 className="font-bold float-start text-start text-xl">Bike Oil Health</h3>
+					<p className='text-gray-400'>Last changed : </p>
+				</div>
+			</div>
+	        <div className='space-y-5 mt-3'>
+				<button onClick={handleSubmit} className={`p-3 w-full ${startDue ? "bg-emerald-300" : ""}`}>Mark as Serviced</button>
 	        </div>
-	        <button type='submit' className='p-3 w-full mt-5 bg-red-500 text-white text-center rounded hover:bg-red-600 transition-colors'>
+			    <button type='submit' className='p-3 w-full mt-4  text-white text-center rounded hover:bg-red-600 transition-colors'>
+	          Chat With Family
+	        </button>
+	        <button type='submit' className='p-3 w-full mt-4  text-white text-center rounded hover:bg-red-600 transition-colors'>
 	          Submit
 	        </button>
 			<p className='mt-5'>{alert}</p>
-	      </form>
    		</div>
 		<div className='card AddCard flex justify-center items-center rounded-lg'>
 			<ControlPointIcon className='text-lg'/>

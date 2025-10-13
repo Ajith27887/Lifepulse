@@ -38,15 +38,24 @@ background: #1E293B; */
 }
 
 .Dashboard-container{
-	width: 96%;
+	width: 92%;
+		@media ( max-width : "700px") {
+			width : 90%;	
+		}
+
+		@media ( max-width : "400px") {
+			width : 88%;	
+		}
 }
 .side-container{
 	&.closed{
-		width: 4%;
+		width: 8%;
 		transition: ease-in 0.5s;
+
+		@media ( max-width : "400px") {
+			width : 12%;	
+		}
 	}
-	&.open{
-		transition: ease-in 0.5s;
-		width: 10%;
-	}
+
+
 }
