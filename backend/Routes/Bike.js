@@ -9,14 +9,18 @@ router.get("/", (req, res) => {
 
 router.post("/",async (req, res) => {
 	try {
-		console.log("Request Body:", req.body);
-		const { startDate, expireMonth } = req.body;
+        // Add more detailed logging
+        console.log("Full Request Body:", req.body);
+        console.log("Content-Type:", req.headers['content-type']);		const { DueDate } = req.body;
+		console.log(DueDate,"DueDate");
 
-		const Day = new Date(startDate).getDate();
+		if (!DueDate) {
+			
+            return res.status(400).json({ error: "DueDate is required" });
+        }
 		
 		const newengine = new Engine({
-			startDate : new Date(startDate),
-			expireMonth : expireMonth,
+			startDue : new Date(DueDate),
 		}) 
 		
 		console.log("New Engine Object:", newengine);

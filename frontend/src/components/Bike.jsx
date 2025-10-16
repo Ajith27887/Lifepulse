@@ -17,17 +17,15 @@ const Bike = () => {
 		const DueDate = new Date();
 		DueDate.setMonth(DueDate.getMonth() + expireMOnth)
 
-		const DateObj = {
-			Data : DueDate
-		}
-
-		const response = await usePostdata("bike", DateObj)	
+		const datePayload = {
+            DueDate: DueDate.toISOString() // Properly format date for API
+        };
+		
+		const response = await usePostdata("bike", datePayload)	
 
 		const data = await response.json();
 
 		  console.log(data,"response");
-		  
-
 		if (response.ok) {
 			setAlert("✅ Data Saved")
 			setStartDue(true);
@@ -50,7 +48,7 @@ const Bike = () => {
 				</div>
 			</div>
 	        <div className='space-y-5 mt-3'>
-				<button onClick={handleSubmit} className={`p-3 w-full ${startDue ? "bg-emerald-300" : ""}`}>Mark as Serviced</button>
+				<button onClick={handleSubmit} className={`p-3 w-full ${startDue ? "bg-green" : ""}`}>Mark as Serviced</button>
 	        </div>
 			    <button type='submit' className='p-3 w-full mt-4  text-white text-center rounded hover:bg-red-600 transition-colors'>
 	          Chat With Family
