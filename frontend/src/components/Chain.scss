@@ -1,0 +1,37 @@
+/* --- 1. Define the rotation animation --- */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* --- 2. Copy styles from Bike.scss and add new ones --- */
+.chain-card {
+    /* You can copy .AddCard styles from Bike.scss here */
+    /* ... */
+    
+    /* --- 3. Apply animation to the icon --- */
+    .chain-icon {
+        animation: spin 10s linear infinite; // 10 seconds, smooth, forever
+        color: #F59E0B; // Give it an amber color
+    }
+
+    /* --- 4. Style the buttons (same as Bike.scss) --- */
+    /* (Copy the .clear-button styles from Bike.scss) */
+    .clear-button {
+        background-color: #991B1B; /* A dark red color */
+        color: white;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: #EF4444; /* A lighter red on hover */
+        }
+
+        &:disabled {
+            background-color: #4B5563; /* Gray when disabled */
+        }
+    }
+}

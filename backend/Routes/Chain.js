@@ -1,80 +1,70 @@
 import express from "express";
-import Engine from "../models/engineSchema.js"; 
+import Chain from "../models/chainSchema.js"; 
 
 const router = express.Router();
 
-// POST a new service record for a user
+// POST a new chain lube record
 router.post('/', async (req, res) => {
     try {
         const { startDue, endDue, userId } = req.body;
 
         if (!userId || !startDue || !endDue) {
-            return res.status(400).json({ error: "Missing required fields: userId, startDue, or endDue" });
+            return res.status(400).json({ error: "Missing required fields" });
         }
 
-        const newServiceRecord = new Engine({
+        const newLubeRecord = new Chain({ // <-- Use Chain model
             userId,
             startDue,
             endDue
         });
 
-        await newServiceRecord.save();
-        res.status(201).json(newServiceRecord); 
+        await newLubeRecord.save();
+        res.status(201).json(newLubeRecord); 
 
     } catch (error) {
-        console.error("Error saving bike data:", error);
-        res.status(500).json({ error: "Failed to save service record" });
+        console.error("Error saving chain data:", error);
+        res.status(500).json({ error: "Failed to save lube record" });
     }
 });
 
-// GET the *latest* service record for a *specific user*
+// GET the *latest* lube record for a *specific user*
 router.get('/latest/:userId', async (req, res) => {
     try {
         const { userId } = req.params;
-
         if (!userId) {
             return res.status(400).json({ error: "User ID is required" });
         }
 
-        const latestRecord = await Engine.findOne({ userId: userId })
+        const latestRecord = await Chain.findOne({ userId: userId }) // <-- Use Chain model
                                          .sort({ endDue: -1 }); 
 
         if (!latestRecord) {
             return res.status(200).json(null); 
         }
-
         res.status(200).json(latestRecord);
 
     } catch (error) {
-        console.error("Error fetching latest bike data:", error);
+        console.error("Error fetching latest chain data:", error);
         res.status(500).json({ error: "Failed to fetch data" });
     }
 });
 
-// --- NEW DELETE ROUTE ---
-// DELETE all records for a specific user
+// DELETE all chain records for a specific user
 router.delete('/clear/:userId', async (req, res) => {
     try {
         const { userId } = req.params;
-
         if (!userId) {
             return res.status(400).json({ error: "User ID is required" });
         }
 
-        // Delete all documents in the Engine collection that match the userId
-        const deleteResult = await Engine.deleteMany({ userId: userId });
-
-        if (deleteResult.deletedCount === 0) {
-            console.log("No data found to delete for user:", userId);
-        }
+        const deleteResult = await Chain.deleteMany({ userId: userId }); // <-- Use Chain model
 
         res.status(200).json({ message: `Data cleared. ${deleteResult.deletedCount} record(s) deleted.` });
 
     } catch (error) {
-        console.error("Error clearing bike data:", error);
+        console.error("Error clearing chain data:", error);
         res.status(500).json({ error: "Failed to clear data" });
     }
 });
-// --- END NEW DELETE ROUTE ---
 
 export default router;

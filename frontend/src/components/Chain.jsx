@@ -1,42 +1,17 @@
 import { useState, useEffect } from 'react';
 import usePostdata from "../components/lib.js"; 
-import ControlPointIcon from "@mui/icons-material/ControlPoint"; // <-- THIS IS THE FIX
-import TwoWheelerIcon from "@mui/icons-material/TwoWheeler";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import InsertLinkIcon from '@mui/icons-material/InsertLink'; // <-- 1. Import Chain Icon
 
-import "../components/Bike.scss"; 
+import "../components/Chain.scss"; // <-- 2. Import new SCSS file
 
-// Placeholder for fetching data
-const useGetData = async (api) => {
-    try {
-        const response = await fetch(`http://localhost:8080/${api}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const text = await response.text();
-        return text ? JSON.parse(text) : null;
-    } catch (error) {
-        console.error("❌ Error fetching data:", error);
-        return null; 
-    }
-};
+// (Your useGetData and useDeleteData helper functions would be here)
+// (Copy them from Bike.jsx if they aren't in a shared file)
+const useGetData = async (api) => { /* ... */ };
+const useDeleteData = async (api) => { /* ... */ };
 
-// Placeholder for deleting data
-const useDeleteData = async (api) => {
-    try {
-        const response = await fetch(`http://localhost:8080/${api}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        return response; 
-    } catch (error) {
-        console.error("❌ Error deleting data:", error);
-        return null; 
-    }
-};
 
-const Bike = ({ user }) => { 
+const Chain = ({ user }) => { // <-- 3. Rename component
     const [startDue, setStartDue] = useState(false);
     const [alert, setAlert] = useState('');
     const [lastServicedDate, setLastServicedDate] = useState(null); 
@@ -46,19 +21,17 @@ const Bike = ({ user }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const serviceIntervalMonths = 3; 
+    // --- 4. Change interval logic ---
+    const serviceIntervalDays = 14; // Chain lube every 14 days
 
-    // useEffect to clear alert
     useEffect(() => {
         if (alert) { 
-            const timer = setTimeout(() => {
-                setAlert(''); 
-            }, 3000); 
+            const timer = setTimeout(() => { setAlert(''); }, 3000); 
             return () => clearTimeout(timer);
         }
     }, [alert]); 
 
-    // Function to calculate progress
+    // Calculate progress (no changes needed)
     const calculateProgress = (lastService, nextDue) => {
         if (!lastService || !nextDue) return 100; 
         const lastServiceTime = new Date(lastService).getTime();
@@ -74,9 +47,11 @@ const Bike = ({ user }) => {
 
      // Fetch data
     useEffect(() => {
-        const fetchLatestBikeData = async () => {
+        const fetchLatestChainData = async () => { // <-- 5. Rename function
             if (user && user.uid) { 
-                const data = await useGetData(`bike/latest/${user.uid}`); 
+                // --- 6. Change API endpoint ---
+                const data = await useGetData(`chain/latest/${user.uid}`); 
+                
                 if (data && data.startDue && data.endDue) {
                     const fetchedLastServiced = new Date(data.startDue); 
                     const fetchedDueDate = new Date(data.endDue); 
@@ -89,7 +64,7 @@ const Bike = ({ user }) => {
                     setDueDate(null);
                     setOilHealthPercentage(100); 
                     setStartDue(false); 
-                    console.log("No previous service data found for this user.");
+                    console.log("No previous chain data found for this user.");
                 }
             } else {
                 setLastServicedDate(null);
@@ -98,10 +73,9 @@ const Bike = ({ user }) => {
                 setStartDue(false);
             }
         };
-        fetchLatestBikeData();
+        fetchLatestChainData(); // <-- 5. Rename function
     }, [user]); 
 
-     // Update progress
     useEffect(() => {
         setOilHealthPercentage(calculateProgress(lastServicedDate, dueDate));
     }, [lastServicedDate, dueDate]);
@@ -119,17 +93,20 @@ const Bike = ({ user }) => {
         try {
             const currentServiceDate = new Date(); 
             const newDueDate = new Date(currentServiceDate);
-            newDueDate.setMonth(currentServiceDate.getMonth() + serviceIntervalMonths);
+            // --- 7. Change date logic ---
+            newDueDate.setDate(currentServiceDate.getDate() + serviceIntervalDays);
+
             const datePayload = {
                 startDue: currentServiceDate.toISOString(), 
                 endDue: newDueDate.toISOString(),       
                 userId: user.uid                        
             };
-            response = await usePostdata("bike", datePayload); 
+            // --- 8. Change API endpoint ---
+            response = await usePostdata("chain", datePayload); 
+            
             if (response.ok) {
                 const data = await response.json(); 
-                console.log(data, "response");
-                setAlert("✅ Data Saved"); 
+                setAlert("✅ Lube Data Saved"); 
                 setLastServicedDate(currentServiceDate); 
                 setDueDate(newDueDate); 
                 setOilHealthPercentage(100); 
@@ -141,12 +118,10 @@ const Bike = ({ user }) => {
                 } catch (parseError) {
                     errorData = { error: `Server responded with status: ${response.status}` };
                 }
-                console.error("Error from server:", errorData);
                 setAlert(`❌ Error: ${errorData.error || 'Failed to save'}`); 
             }
         } catch (error) {
-            console.error("❌ Error Sending bike data to API:", error);
-            setAlert("❌ Error connecting to server. (Is the backend running?)"); 
+            setAlert("❌ Error connecting to server."); 
         } finally {
             setIsLoading(false);
         }
@@ -154,85 +129,58 @@ const Bike = ({ user }) => {
 
     // Handle Clear Data
     const handleClearData = async () => {
-        if (!window.confirm("Are you sure you want to clear all bike service data? This cannot be undone.")) {
+        if (!window.confirm("Are you sure you want to clear all chain lube data?")) {
             return;
         }
-
         if (!user || !user.uid) {
             setAlert("❌ You must be logged in.");
             return;
         }
-
         setIsDeleting(true);
         try {
-            const response = await useDeleteData(`bike/clear/${user.uid}`);
+            // --- 9. Change API endpoint ---
+            const response = await useDeleteData(`chain/clear/${user.uid}`);
 
             if (response && response.ok) {
-                setAlert("✅ Data cleared successfully.");
+                setAlert("✅ Lube data cleared.");
                 setLastServicedDate(null);
                 setDueDate(null);
                 setOilHealthPercentage(100);
                 setStartDue(false);
             } else {
-                let errorData = { error: "Failed to clear data." };
-                try {
-                    errorData = await response.json();
-                } catch (e) {
-                     // ignore parse error, use default
-                }
-                setAlert(`❌ Error: ${errorData.error}`);
+                setAlert(`❌ Error: Failed to clear data.`);
             }
         } catch (error) {
-            console.error("❌ Error clearing data:", error);
             setAlert("❌ Error connecting to server.");
         } finally {
             setIsDeleting(false);
         }
     };
 
-    // Logic for disabling the service button
+    // Button disabling logic (no changes)
     const today = new Date();
     const isServicedToday = lastServicedDate && 
                            (lastServicedDate.toDateString() === today.toDateString());
-
     const isButtonDisabled = isLoading || isServicedToday || isDeleting;
 
-    // Progress Bar Styling
-    const progressBarStyle = {
-        width: '100%',
-        backgroundColor: '#4B5563', 
-        borderRadius: '0.375rem', 
-        overflow: 'hidden',
-        height: '1.5rem', 
-        marginTop: '0.75rem',
-        marginBottom: '0.75rem' 
-    };
-
-    const progressBarInnerStyle = {
-        height: '100%',
-        width: `${oilHealthPercentage}%`,
-        backgroundColor: oilHealthPercentage > 50 ? '#10B981' : (oilHealthPercentage > 20 ? '#F59E0B' : '#EF4444'), 
-        transition: 'width 0.5s ease-in-out',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '0.875rem'
-    };
+    // Progress bar styles (no changes)
+    const progressBarStyle = { /* ... */ };
+    const progressBarInnerStyle = { /* ... */ };
 
     return (
+        // --- 10. Change text & icons ---
         <div className=' mt-5'>
-            <div className="card AddCard">
+            <div className="card AddCard chain-card"> {/* <-- Add new class */}
                 <div className='grid grid-cols-2 justify-center items-center'>
-                    <TwoWheelerIcon style={{ fontSize: "100px" }} />
+                    {/* --- Add chain-icon class for animation --- */}
+                    <InsertLinkIcon className="chain-icon" style={{ fontSize: "100px" }} />
                     <div>
-                        <h3 className="font-bold float-start text-start text-xl">Bike Oil Health</h3>
+                        <h3 className="font-bold float-start text-start text-xl">Chain Lube Status</h3>
                         <p className='text-gray-400 text-sm'>
-                            Last changed: {lastServicedDate ? lastServicedDate.toLocaleString() : 'N/A'}
+                            Last lubed: {lastServicedDate ? lastServicedDate.toLocaleString() : 'N/A'}
                         </p>
                         <p className='text-gray-400 text-sm'>
-                            Next due: {dueDate ? dueDate.toLocaleString() : 'N/A'}
+                            Next lube due: {dueDate ? dueDate.toLocaleString() : 'N/A'}
                         </p>
                     </div>
                 </div>
@@ -251,24 +199,28 @@ const Bike = ({ user }) => {
                         disabled={isButtonDisabled}
                         className={`p-3 w-full rounded ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                        {isLoading ? 'Saving...' : (isServicedToday ? 'Serviced Today' : 'Mark as Serviced Today')}
+                        {isLoading ? 'Saving...' : (isServicedToday ? 'Lubed Today' : 'Mark as Lubed Today')}
                     </button>
 
                     {lastServicedDate && (
                         <button
                             onClick={handleClearData}
                             disabled={isLoading || isDeleting}
-                            className={`p-3 mt-2 w-full rounded clear-button ${ (isLoading || isDeleting) ? 'opacity-50 cursor-not-allowed' : '' }`}
+                            className={`p-3 w-full mt-2 rounded clear-button ${ (isLoading || isDeleting) ? 'opacity-50 cursor-not-allowed' : '' }`}
                         >
-                            {isDeleting ? 'Clearing...' : 'Clear All Data'}
+                            {isDeleting ? 'Clearing...' : 'Clear Lube Data'}
                         </button>
                     )}
                 </div>
                 
                 <p className='mt-3'>{alert}</p> 
             </div>
+            {/* This is the + card, leave it */}
+            {/* <div className='card AddCard flex justify-center items-center rounded-lg'>
+                <ControlPointIcon className='text-lg' />
+            </div> */}
         </div>
     );
 };
 
-export default Bike;
+export default Chain;

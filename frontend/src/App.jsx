@@ -8,6 +8,11 @@ import Home from "./components/Home.jsx";
 import "./App.scss"
 import SideMenuProvider from "./components/Context/SideMenuContext.jsx";
 import { SideMenuContext } from "./components/Context/SideMenuContext.jsx";
+// import Chain from "./components/Chain.jsx";
+
+// 1. Import the new JoinPeople component
+// import JoinPeople from "./components/JoinPeople.jsx";
+                                                    // <Route path='/join' element={<JoinPeople user={user} />} /> 
 
 
 function App() {
@@ -24,18 +29,24 @@ function App() {
 								<div className="flex">
 									<SideMenuContext.Consumer>
 										{({ isOpen }) => (
+                                            <>
                                             <div className={`side-container ${isOpen ? "open" : "closed"}`}>
                                                 <SideNav />
                                             </div>
+                                            
+                                            {/* 2. Apply classes to Dashboard-container */}
+                                            <div style={{backgroundColor: "#1E293B"}} className={`Dashboard-container ${isOpen ? "open" : "closed"} text-black p-5`}>
+                                                <Routes>
+                                                    <Route path='/' element={<Home user={user} />} />
+                                                    <Route path='/bike' element={<Bike user={user} />} />
+                                                    {/* We need to get Chain.jsx from the previous step */}
+                                                    {/* <Route path='/chain' element={<Chain user={user} />} /> */}
+                                                    {/* 3. Add the route for the /join page */}
+                                                </Routes>
+                                            </div>
+                                            </>
                                         )}
 									</SideMenuContext.Consumer>
-							
-									<div style={{backgroundColor: "#1E293B"}} className={`Dashboard-container  text-black p-5`}>
-										<Routes>
-											<Route path='/' element={<Home />} />
-											<Route path='/bike' element={<Bike />} />
-										</Routes>
-									</div>
 								</div>
 							</>
 						) : (
